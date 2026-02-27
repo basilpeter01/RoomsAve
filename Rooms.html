@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Rooms | RoomsAve</title>
+    <link rel="stylesheet" href="Rooms.css">
+    <style>
+        .filter-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            border: 1px solid #e2e8f0;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #475569;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .btn-clear {
+            background: #64748b;
+            color: white;
+            border: none;
+            height: 45px;
+            padding: 0 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-clear:hover {
+            background: #475569;
+        }
+
+        .status-available {
+            background: #22c55e;
+        }
+
+        .status-booked {
+            background: #ef4444;
+        }
+
+        .status-maintenance {
+            background: #f59e0b;
+        }
+
+        .status-badge {
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">RoomsAve</div>
+        <div class="nav-links">
+            <a href="Home.html">Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header style="text-align: center; margin: 40px 0;">
+            <h2>Explore Available Stays</h2>
+            <p>Filter our full collection of rooms by name or budget. Data loaded live from the database.</p>
+        </header>
+
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>Search by Room Type</label>
+                <input type="text" id="searchInput" onkeyup="filterRooms()" placeholder="e.g. Deluxe, Suite, Cabin...">
+            </div>
+            <div class="filter-group">
+                <label>Budget (Maximum Price)</label>
+                <input type="number" id="priceInput" oninput="filterRooms()" placeholder="Enter max price...">
+            </div>
+            <div class="filter-group">
+                <label>Status</label>
+                <select id="statusFilter" onchange="filterRooms()">
+                    <option value="">All</option>
+                    <option value="available">Available</option>
+                    <option value="booked">Booked</option>
+                    <option value="maintenance">Maintenance</option>
+                </select>
+            </div>
+            <div style="display: flex; align-items: flex-end;">
+                <button class="btn-clear" onclick="clearFilters()">Clear Filters</button>
+            </div>
+        </div>
+
+        <p id="status-msg"
+            style="text-align: center; margin-bottom: 20px; color: #2563eb; font-weight: bold; min-height: 20px;"></p>
+
+        <div class="room-grid" id="allRooms"></div>
+    </div>
+
+    <script>
+        const API = '';
+        let allRoomData = [];
+
+        const images = {
+            'Deluxe': 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=500',
+            'Suite': 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=500',
+            'Standard': 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=500',
+            'Penthouse': 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=500',
+            'Cabin': 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500',
+            'Studio': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500',
+            'Heritage': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500'
+        };
+
+        // Fetch rooms from database on page load
+        function loadRooms() {
+            const status = document.getElementById('status-msg');
+            status.textContent = 'Loading rooms from database...';
+
+            fetch('/rooms')
+                .then(res => res.json())
+                .then(rooms => {
+                    allRoomData = rooms;
+                    status.textContent = 'Showing ' + rooms.length + ' rooms from the database.';
+                    renderRooms(rooms);
+                })
+                .catch(err => {
+                    status.textContent = 'Error: Could not connect to server. Make sure Flask is running.';
+                    status.style.color = '#ef4444';
+                });
+        }
+
+        function renderRooms(data) {
+            const grid = document.getElementById('allRooms');
+            if (data.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">No rooms match your search criteria.</p>';
+                return;
+            }
+            grid.innerHTML = data.map(room => {
+                const img = images[room.room_type] || 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=500';
+                const statusClass = 'status-' + room.status;
+                const statusText = room.status.charAt(0).toUpperCase() + room.status.slice(1);
+
+                return `
+                    <div class="room-card" style="position: relative;">
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                        <img src="${img}" class="room-img" alt="${room.room_type}">
+                        <div class="room-info">
+                            <h3>Room ${room.room_number} - ${room.room_type}</h3>
+                            <p style="color: #64748b; font-size: 13px; margin: 5px 0;">Capacity: ${room.capacity} guests</p>
+                            <p class="price">$${room.price_per_night} / night</p>
+                            <button class="btn-book" style="width: 100%; margin-top: 10px;" ${room.status !== 'available' ? 'disabled style="width:100%;margin-top:10px;opacity:0.5;cursor:not-allowed;"' : ''}>
+                                ${room.status === 'available' ? 'Book from Home' : room.status === 'booked' ? 'Booked' : 'Under Maintenance'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Client-side filtering on already-fetched data
+        function filterRooms() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const maxPrice = parseFloat(document.getElementById('priceInput').value) || Infinity;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const filtered = allRoomData.filter(room =>
+                room.room_type.toLowerCase().includes(query) &&
+                room.price_per_night <= maxPrice &&
+                (statusFilter === '' || room.status === statusFilter)
+            );
+
+            document.getElementById('status-msg').textContent = 'Showing ' + filtered.length + ' of ' + allRoomData.length + ' rooms.';
+            renderRooms(filtered);
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('priceInput').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('status-msg').textContent = 'Showing ' + allRoomData.length + ' rooms from the database.';
+            renderRooms(allRoomData);
+        }
+
+        // Load rooms on page load
+        loadRooms();
+    </script>
+</body>
+
+</html>

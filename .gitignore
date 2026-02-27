@@ -1,0 +1,10 @@
+# Environment variables (contains passwords)
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
