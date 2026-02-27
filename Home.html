@@ -420,13 +420,17 @@
                             const nights = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
                             const total = (nights * b.price_per_night).toFixed(2);
 
+                            const statusColor = b.booking_status === 'confirmed' ? '#f59e0b'
+                                : b.booking_status === 'completed' ? '#22c55e' : '#ef4444';
+                            const statusLabel = b.booking_status === 'completed' ? 'PAID ✅' : b.booking_status.toUpperCase();
+
                             return `
                             <div style="border:1px solid #e2e8f0; border-radius:8px; padding:15px; margin-bottom:10px;">
                                 <strong>Room ${b.room_number} (${b.room_type})</strong>
                                 <p style="margin:5px 0;color:#64748b;">Check-in: ${b.check_in} | Check-out: ${b.check_out}</p>
                                 <p style="margin:5px 0;">$${b.price_per_night}/night × ${nights} nights = <strong>$${total}</strong> | Status: 
-                                    <span style="color:${b.booking_status === 'confirmed' ? '#22c55e' : '#ef4444'}; font-weight:bold;">
-                                        ${b.booking_status.toUpperCase()}
+                                    <span style="color:${statusColor}; font-weight:bold;">
+                                        ${statusLabel}
                                     </span>
                                 </p>
                                 <div style="display:flex;gap:8px;margin-top:8px;">

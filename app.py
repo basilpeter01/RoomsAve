@@ -165,7 +165,7 @@ def get_bookings(user_id):
                r.room_number, r.room_type, r.price_per_night
         FROM booking b
         JOIN room r ON b.room_id = r.room_id
-        WHERE b.user_id = %s
+        WHERE b.user_id = %s AND b.booking_status != 'cancelled'
         ORDER BY b.check_in DESC
     """, (user_id,))
     bookings = cur.fetchall()
@@ -217,6 +217,11 @@ def make_payment():
         cur.execute(
             "INSERT INTO payment (booking_id, amount, payment_method, payment_date) VALUES (%s, %s, %s, %s)",
             (data['booking_id'], data['amount'], data['payment_method'], data['payment_date'])
+        )
+        # Mark booking as completed after payment
+        cur.execute(
+            "UPDATE booking SET booking_status = 'completed' WHERE booking_id = %s",
+            (data['booking_id'],)
         )
         mysql.connection.commit()
         cur.close()
