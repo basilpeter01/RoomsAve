@@ -23,7 +23,7 @@ mysql = MySQL(app)
 
 
 # ============================================
-# SERVE FRONTEND (safe — only serves from templates/ and static/)
+# SERVE FRONTEND 
 # ============================================
 @app.route('/')
 def serve_home():
@@ -32,11 +32,6 @@ def serve_home():
 @app.route('/<path:filename>.html')
 def serve_page(filename):
     return send_from_directory('templates', f'{filename}.html')
-
-@app.route('/static/css/<path:filename>')
-def serve_css(filename):
-    return send_from_directory('static/css', filename)
-
 
 # ============================================
 # USER ROUTES
