@@ -45,6 +45,75 @@
             font-weight: bold;
             font-size: 14px;
         }
+
+        /* Payment modal styles */
+        .btn-pay {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-pay:hover {
+            background: #19a34a;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .payment-methods label {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: border-color 0.2s;
+        }
+
+        .payment-methods input[type="radio"] {
+            accent-color: #2563eb;
+        }
+
+        .payment-methods label:has(input:checked) {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .success-msg {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .success-msg .checkmark {
+            font-size: 3rem;
+            color: #22c55e;
+            margin-bottom: 10px;
+        }
+
+        .success-msg h3 {
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .success-msg p {
+            color: #64748b;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -94,13 +163,14 @@
         <div class="room-grid" id="roomGrid"></div>
     </div>
 
+    <!-- Booking Modal -->
     <div id="bookingModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <h3>Book Room</h3>
             <form id="bookingForm" onsubmit="confirmBooking(event)">
                 <input type="hidden" id="selectedRoomId">
-                <input type="hidden" id="selectedRoomName">
+                <input type="hidden" id="selectedRoomPrice">
                 <p id="bookingRoomInfo" style="font-weight: bold; color: #2563eb; margin-bottom: 15px;"></p>
                 <div class="form-group"><label>Check-in Date</label><input type="date" id="checkIn" required></div>
                 <div class="form-group"><label>Check-out Date</label><input type="date" id="checkOut" required></div>
@@ -116,6 +186,43 @@
                 onclick="document.getElementById('bookingsModal').style.display='none'">&times;</span>
             <h3>My Bookings</h3>
             <div id="bookingsList"></div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closePaymentModal()">&times;</span>
+            <h3>💳 Make Payment</h3>
+            <form id="paymentForm" onsubmit="submitPayment(event)">
+                <input type="hidden" id="payBookingId">
+                <p id="paymentInfo" style="font-weight: bold; color: #2563eb; margin-bottom: 15px;"></p>
+                <div class="form-group">
+                    <label>Amount ($)</label>
+                    <input type="number" id="payAmount" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <div class="payment-methods">
+                        <label><input type="radio" name="payMethod" value="card" checked> 💳 Card</label>
+                        <label><input type="radio" name="payMethod" value="upi"> 📱 UPI</label>
+                        <label><input type="radio" name="payMethod" value="cash"> 💵 Cash</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn-pay">Confirm Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Success Modal -->
+    <div id="paymentSuccessModal" class="modal">
+        <div class="modal-content">
+            <div class="success-msg">
+                <div class="checkmark">✅</div>
+                <h3>Payment Successful!</h3>
+                <p id="successDetails"></p>
+                <button class="btn-book" style="margin-top: 20px;" onclick="closeSuccessModal()">Done</button>
+            </div>
         </div>
     </div>
 
@@ -236,6 +343,7 @@
                 return;
             }
             document.getElementById('selectedRoomId').value = roomId;
+            document.getElementById('selectedRoomPrice').value = price;
             document.getElementById('bookingRoomInfo').textContent = roomType + ' - $' + price + '/night';
             // Set min date to today
             const today = new Date().toISOString().split('T')[0];
@@ -255,6 +363,7 @@
             if (!user) { alert('Please log in first.'); return; }
 
             const roomId = document.getElementById('selectedRoomId').value;
+            const price = parseFloat(document.getElementById('selectedRoomPrice').value);
             const checkIn = document.getElementById('checkIn').value;
             const checkOut = document.getElementById('checkOut').value;
 
@@ -262,6 +371,12 @@
                 alert('Check-out date must be after check-in date.');
                 return;
             }
+
+            // Calculate total
+            const d1 = new Date(checkIn);
+            const d2 = new Date(checkOut);
+            const nights = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+            const totalAmount = (nights * price).toFixed(2);
 
             fetch('/booking', {
                 method: 'POST',
@@ -276,9 +391,10 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.error) { alert(data.error); return; }
-                    alert(data.message + ' (Booking ID: ' + data.booking_id + ')');
                     closeModal();
-                    loadRooms(); // Refresh room list to show updated status
+                    // Open payment modal after booking
+                    openPaymentModal(data.booking_id, totalAmount, nights);
+                    loadRooms();
                 })
                 .catch(err => alert('Booking failed. Check server.'));
         }
@@ -297,18 +413,31 @@
                     if (bookings.length === 0) {
                         list.innerHTML = '<p style="text-align:center;color:#64748b;padding:20px;">No bookings yet.</p>';
                     } else {
-                        list.innerHTML = bookings.map(b => `
-                        <div style="border:1px solid #e2e8f0; border-radius:8px; padding:15px; margin-bottom:10px;">
-                            <strong>Room ${b.room_number} (${b.room_type})</strong>
-                            <p style="margin:5px 0;color:#64748b;">Check-in: ${b.check_in} | Check-out: ${b.check_out}</p>
-                            <p style="margin:5px 0;">$${b.price_per_night}/night | Status: 
-                                <span style="color:${b.booking_status === 'confirmed' ? '#22c55e' : '#ef4444'}; font-weight:bold;">
-                                    ${b.booking_status.toUpperCase()}
-                                </span>
-                            </p>
-                            ${b.booking_status === 'confirmed' ? `<button onclick="cancelBooking(${b.booking_id})" style="background:#ef4444;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;margin-top:5px;">Cancel</button>` : ''}
-                        </div>
-                    `).join('');
+                        list.innerHTML = bookings.map(b => {
+                            // Calculate total for payment
+                            const d1 = new Date(b.check_in);
+                            const d2 = new Date(b.check_out);
+                            const nights = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+                            const total = (nights * b.price_per_night).toFixed(2);
+
+                            return `
+                            <div style="border:1px solid #e2e8f0; border-radius:8px; padding:15px; margin-bottom:10px;">
+                                <strong>Room ${b.room_number} (${b.room_type})</strong>
+                                <p style="margin:5px 0;color:#64748b;">Check-in: ${b.check_in} | Check-out: ${b.check_out}</p>
+                                <p style="margin:5px 0;">$${b.price_per_night}/night × ${nights} nights = <strong>$${total}</strong> | Status: 
+                                    <span style="color:${b.booking_status === 'confirmed' ? '#22c55e' : '#ef4444'}; font-weight:bold;">
+                                        ${b.booking_status.toUpperCase()}
+                                    </span>
+                                </p>
+                                <div style="display:flex;gap:8px;margin-top:8px;">
+                                    ${b.booking_status === 'confirmed' ? `
+                                        <button onclick="openPaymentModal(${b.booking_id}, ${total}, ${nights})" style="background:#22c55e;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-weight:bold;">💳 Pay Now</button>
+                                        <button onclick="cancelBooking(${b.booking_id})" style="background:#ef4444;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;">Cancel</button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                        }).join('');
                     }
                     document.getElementById('bookingsModal').style.display = 'flex';
                 });
@@ -326,6 +455,54 @@
                     viewMyBookings(); // Refresh list
                     loadRooms();      // Refresh rooms
                 });
+        }
+
+        // =====================
+        // PAYMENT MODAL
+        // =====================
+        function openPaymentModal(bookingId, totalAmount, nights) {
+            document.getElementById('payBookingId').value = bookingId;
+            document.getElementById('payAmount').value = totalAmount;
+            document.getElementById('paymentInfo').textContent =
+                'Booking #' + bookingId + ' — ' + nights + ' night(s) — Total: $' + totalAmount;
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function submitPayment(e) {
+            e.preventDefault();
+            const bookingId = document.getElementById('payBookingId').value;
+            const amount = document.getElementById('payAmount').value;
+            const method = document.querySelector('input[name="payMethod"]:checked').value;
+            const today = new Date().toISOString().split('T')[0];
+
+            fetch('/payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    booking_id: parseInt(bookingId),
+                    amount: parseFloat(amount),
+                    payment_method: method,
+                    payment_date: today
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) { alert(data.error); return; }
+                    closePaymentModal();
+                    document.getElementById('successDetails').textContent =
+                        '$' + parseFloat(amount).toFixed(2) + ' paid via ' + method.toUpperCase() + ' for Booking #' + bookingId;
+                    document.getElementById('paymentSuccessModal').style.display = 'flex';
+                    viewMyBookings(); // Refresh bookings list to show payment status
+                })
+                .catch(err => alert('Payment failed. Check server.'));
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('paymentSuccessModal').style.display = 'none';
         }
 
         // =====================

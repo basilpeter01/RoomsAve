@@ -142,12 +142,13 @@ def create_booking():
             "INSERT INTO booking (user_id, room_id, check_in, check_out, booking_status) VALUES (%s, %s, %s, %s, 'confirmed')",
             (data['user_id'], data['room_id'], data['check_in'], data['check_out'])
         )
+        # Capture booking_id right after INSERT, before any other queries
+        booking_id = cur.lastrowid
 
         # Update room status to 'booked'
         cur.execute("UPDATE room SET status = 'booked' WHERE room_id = %s", (data['room_id'],))
 
         mysql.connection.commit()
-        booking_id = cur.lastrowid
         cur.close()
 
         return jsonify({"message": "Booking confirmed!", "booking_id": booking_id}), 201
