@@ -23,15 +23,19 @@ mysql = MySQL(app)
 
 
 # ============================================
-# SERVE FRONTEND (HTML files)
+# SERVE FRONTEND (safe — only serves from templates/ and static/)
 # ============================================
 @app.route('/')
 def serve_home():
-    return send_from_directory('.', 'Home.html')
+    return send_from_directory('templates', 'Home.html')
 
-@app.route('/<path:filename>')
-def serve_static(filename):
-    return send_from_directory('.', filename)
+@app.route('/<path:filename>.html')
+def serve_page(filename):
+    return send_from_directory('templates', f'{filename}.html')
+
+@app.route('/static/css/<path:filename>')
+def serve_css(filename):
+    return send_from_directory('static/css', filename)
 
 
 # ============================================
@@ -82,6 +86,16 @@ def get_rooms():
     max_price = request.args.get('max_price', None)
 
     cur = mysql.connection.cursor()
+
+    # Auto-checkout: free up rooms whose checkout date has passed
+    cur.execute("""
+        UPDATE room SET status = 'available'
+        WHERE room_id IN (
+            SELECT room_id FROM booking
+            WHERE check_out <= CURDATE() AND booking_status IN ('confirmed', 'completed')
+        ) AND status = 'booked'
+    """)
+    mysql.connection.commit()
 
     query = "SELECT * FROM room WHERE 1=1"
     params = []
