@@ -17,7 +17,7 @@ A full-stack **Database Management System (DBMS)** project for managing hotel ro
 
 ## Frontend
 
-The frontend consists of 3 pages served directly by Flask:
+The frontend consists of 3 pages:
 
 - **Home** (`Home.html`) — Landing page with login form, featured rooms grid, booking modal, and a "My Bookings" viewer.
 - **Signup** (`Signup.html`) — Registration form for new users (name, username, email, phone, password).
@@ -27,7 +27,7 @@ The frontend consists of 3 pages served directly by Flask:
 
 ## Backend (Flask)
 
-The Flask server (`app.py`) exposes the following routes:
+The Flask server exposes the following routes:
 
 | Route | Method | Description |
 |---|---|---|
@@ -36,7 +36,7 @@ The Flask server (`app.py`) exposes the following routes:
 | `/rooms` | GET | Fetch all rooms (supports search & price filtering) |
 | `/rooms/<id>` | GET | Fetch a single room by ID |
 | `/booking` | POST | Create a booking & update room status |
-| `/bookings/<user_id>` | GET | Retrieve bookings for a user (JOIN with room) |
+| `/bookings/<user_id>` | GET | Retrieve bookings for a user |
 | `/booking/<id>/cancel` | PUT | Cancel a booking & free the room |
 | `/payment` | POST | Record a payment against a booking |
 | `/payments/<booking_id>` | GET | Retrieve payments for a booking |
@@ -148,7 +148,7 @@ BOOKING (M) ──── money payment ──── (N) PAYMENT
    ```
    mysql -u root -p < schema.sql
    ```
-   or create the user,database andtables manually.
+   or create the user,database and tables manually.
 
 4. **Start the server**
    ```
