@@ -4,6 +4,47 @@ A full-stack **Database Management System (DBMS)** project for managing hotel ro
 
 ---
 
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | HTML5, CSS3, JavaScript |
+| Backend | Python Flask |
+| Database | MySQL 8.0 |
+| DB Connector | flask-mysqldb (mysqlclient) |
+
+---
+
+## Frontend
+
+The frontend consists of 3 pages served directly by Flask:
+
+- **Home** (`Home.html`) — Landing page with login form, featured rooms grid, booking modal, and a "My Bookings" viewer.
+- **Signup** (`Signup.html`) — Registration form for new users (name, username, email, phone, password).
+- **Rooms** (`Rooms.html`) — Full room listing with search by type, budget filter, and status filter.
+
+---
+
+## Backend (Flask)
+
+The Flask server (`app.py`) exposes the following routes:
+
+| Route | Method | Description |
+|---|---|---|
+| `/register` | POST | Register a new guest user |
+| `/login` | POST | Authenticate via username & password |
+| `/rooms` | GET | Fetch all rooms (supports search & price filtering) |
+| `/rooms/<id>` | GET | Fetch a single room by ID |
+| `/booking` | POST | Create a booking & update room status |
+| `/bookings/<user_id>` | GET | Retrieve bookings for a user (JOIN with room) |
+| `/booking/<id>/cancel` | PUT | Cancel a booking & free the room |
+| `/payment` | POST | Record a payment against a booking |
+| `/payments/<booking_id>` | GET | Retrieve payments for a booking |
+
+- Static files (CSS) are served from `static/css/` and HTML templates from `templates/`.
+
+---
+
 ## Database Design
 
 ### ER Model
@@ -66,49 +107,23 @@ BOOKING (M) ──── money payment ──── (N) PAYMENT
 
 ---
 
-## Backend (Flask)
-
-The Flask server (`app.py`) exposes the following routes:
-
-| Route | Method | Description |
-|---|---|---|
-| `/register` | POST | Register a new guest user |
-| `/login` | POST | Authenticate via username & password |
-| `/rooms` | GET | Fetch all rooms (supports search & price filtering) |
-| `/rooms/<id>` | GET | Fetch a single room by ID |
-| `/booking` | POST | Create a booking & update room status |
-| `/bookings/<user_id>` | GET | Retrieve bookings for a user (JOIN with room) |
-| `/booking/<id>/cancel` | PUT | Cancel a booking & free the room |
-| `/payment` | POST | Record a payment against a booking |
-| `/payments/<booking_id>` | GET | Retrieve payments for a booking |
-
----
-
-## Frontend
-
-The frontend consists of 3 pages served directly by Flask:
-
-- **Home** (`Home.html`) — Landing page with login form, featured rooms grid (fetched live from MySQL), booking modal, and a "My Bookings" viewer.
-- **Signup** (`Signup.html`) — Registration form for new users (name, username, email, phone, password).
-- **Rooms** (`Rooms.html`) — Full room listing with search by type, budget filter, and status filter. All data is fetched from the database in real time.
-
----
-
 ## Project Structure
 
 ```
-├── app.py                Flask backend
-├── schema.sql            Database schema & seed data
-├── requirements.txt      Python dependencies
-├── .env                  Local database credentials (git-ignored)
-├── .env.example          Template for .env
+├── app.py                  Flask backend
+├── schema.sql              Database schema & seed data
+├── requirements.txt        Python dependencies
+├── .env.example            Template for .env
 ├── .gitignore
-├── Home.html             Landing page + Login + Booking
-├── Home.css
-├── Rooms.html            Room browsing & filtering
-├── Rooms.css
-├── Signup.html           User registration
-├── Login.css
+├── templates/
+│   ├── Home.html           Landing page + Login + Booking
+│   ├── Rooms.html          Room browsing & filtering
+│   └── Signup.html         User registration
+├── static/
+│   └── css/
+│       ├── Home.css
+│       ├── Rooms.css
+│       └── Login.css
 └── README.md
 ```
 
@@ -133,6 +148,7 @@ The frontend consists of 3 pages served directly by Flask:
    ```
    mysql -u root -p < schema.sql
    ```
+   or create the user,database andtables manually.
 
 4. **Start the server**
    ```
@@ -146,16 +162,3 @@ The frontend consists of 3 pages served directly by Flask:
 | Username | Password | Role |
 |---|---|---|
 | `admin` | `admin123` | Admin |
-| `johndoe` | `guest123` | Guest |
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Backend | Python Flask |
-| Database | MySQL 8.0 |
-| Frontend | HTML5, CSS3, JavaScript |
-| DB Connector | flask-mysqldb (mysqlclient) |
-| Config | python-dotenv |
