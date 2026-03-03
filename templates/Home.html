@@ -180,11 +180,14 @@
 
     <!-- My Bookings Modal -->
     <div id="bookingsModal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
-            <span class="close-btn"
-                onclick="document.getElementById('bookingsModal').style.display='none'">&times;</span>
-            <h3>My Bookings</h3>
-            <div id="bookingsList"></div>
+        <div class="modal-content" style="max-width: 600px; max-height: 80vh; display: flex; flex-direction: column;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; margin-bottom: 10px;">
+                <h3 style="margin: 0;">My Bookings</h3>
+                <span class="close-btn" style="float: none; font-size: 1.8rem; cursor: pointer; line-height: 1;"
+                    onclick="document.getElementById('bookingsModal').style.display='none'">&times;</span>
+            </div>
+            <div id="bookingsList" style="overflow-y: auto; flex: 1;"></div>
         </div>
     </div>
 
