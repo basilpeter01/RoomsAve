@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoomsAve | About</title>
+    <link rel="stylesheet" href="/static/css/About.css">
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">RoomsAve</div>
+        <div class="nav-links">
+            <a href="Home.html">Home</a>
+            <a href="#"> | About</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="about-hero">
+        <h1>About This Project</h1>
+        <p>A DBMS-powered hotel management system — designed, built, and documented from scratch.</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="about-content">
+
+        <!-- Developer Card -->
+        <div class="developer-card" id="developerCard">
+            <div class="dev-avatar" id="devAvatar">👤</div>
+            <div class="dev-info">
+                <h2 id="devName">Loading...</h2>
+                <div class="dev-role" id="devRole"></div>
+                <div class="dev-college" id="devCollege"></div>
+                <p class="dev-bio" id="devBio"></p>
+                <div class="dev-socials" id="devSocials"></div>
+            </div>
+        </div>
+
+        <!-- Info Grid: Tech Stack + Highlights -->
+        <div class="info-grid">
+            <!-- Tech Stack -->
+            <div class="info-card">
+                <h3><span class="icon">⚙️</span> Tech Stack</h3>
+                <div class="tech-list" id="techList"></div>
+            </div>
+
+            <!-- Project Highlights -->
+            <div class="info-card">
+                <h3><span class="icon">✨</span> Key Features</h3>
+                <ul class="highlight-list" id="highlightList"></ul>
+            </div>
+        </div>
+
+        <!-- Team + Guide -->
+        <div class="team-section">
+            <h3>👥 Team & Acknowledgment</h3>
+            <div class="team-grid" id="teamGrid"></div>
+            <div id="guideSection"></div>
+        </div>
+    </div>
+
+    <!-- Footer Badge -->
+    <div class="project-footer">
+        <div class="project-badge" id="projectBadge">📘 RoomsAve v1.0</div>
+        <p id="projectMeta"></p>
+    </div>
+
+    <script>
+        fetch('/about')
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    document.querySelector('.about-content').innerHTML =
+                        '<p style="text-align:center;color:#ef4444;padding:40px;">Could not load about information.</p>';
+                    return;
+                }
+
+                // === Developer Card ===
+                const dev = data.developer;
+                const initials = dev.name.split(' ').map(w => w[0]).join('').toUpperCase();
+                document.getElementById('devAvatar').textContent = initials;
+                document.getElementById('devName').textContent = dev.name;
+                document.getElementById('devRole').textContent = dev.role;
+                document.getElementById('devCollege').textContent =
+                    dev.department + ' • ' + dev.college + ' • ' + dev.semester;
+                document.getElementById('devBio').textContent = dev.bio;
+
+                // Social links
+                const socials = document.getElementById('devSocials');
+                if (dev.github) {
+                    socials.innerHTML += `<a href="${dev.github}" target="_blank" class="social-link">🔗 GitHub</a>`;
+                }
+                if (dev.linkedin) {
+                    socials.innerHTML += `<a href="${dev.linkedin}" target="_blank" class="social-link">💼 LinkedIn</a>`;
+                }
+                if (dev.email) {
+                    socials.innerHTML += `<a href="mailto:${dev.email}" class="social-link">✉️ Email</a>`;
+                }
+
+                // === Tech Stack ===
+                const techList = document.getElementById('techList');
+                techList.innerHTML = data.tech_stack.map(tech => `
+                    <div class="tech-item">
+                        <div class="tech-icon">${tech.icon}</div>
+                        <div>
+                            <div class="tech-name">${tech.name}</div>
+                            <div class="tech-category">${tech.category}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // === Highlights ===
+                const proj = data.project;
+                const highlightList = document.getElementById('highlightList');
+                highlightList.innerHTML = proj.highlights.map(h =>
+                    `<li>${h}</li>`
+                ).join('');
+
+                // === Team ===
+                const teamGrid = document.getElementById('teamGrid');
+                teamGrid.innerHTML = data.team.map(member => {
+                    const mi = member.name.split(' ').map(w => w[0]).join('').toUpperCase();
+                    return `
+                        <div class="team-member">
+                            <div class="member-avatar">${mi}</div>
+                            <div class="member-name">${member.name}</div>
+                            <div class="member-role">${member.role}</div>
+                            <div class="member-contribution">${member.contribution}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                // === Guide ===
+                if (data.guide && data.guide.name) {
+                    const g = data.guide;
+                    const gi = g.name.replace('Prof. ', '').split(' ').map(w => w[0]).join('').toUpperCase();
+                    document.getElementById('guideSection').innerHTML = `
+                        <div class="guide-card">
+                            <div class="guide-avatar">${gi}</div>
+                            <div class="guide-info">
+                                <div class="guide-name">${g.name}</div>
+                                <div class="guide-designation">${g.designation} — ${g.department}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // === Footer ===
+                document.getElementById('projectBadge').textContent =
+                    '📘 ' + proj.name + ' v' + proj.version;
+                document.getElementById('projectMeta').textContent =
+                    proj.subject + ' • ' + proj.semester + ' • ' + proj.year;
+            })
+            .catch(err => {
+                document.querySelector('.about-content').innerHTML =
+                    '<p style="text-align:center;color:#ef4444;padding:40px;">Error loading about page. Make sure Flask is running.</p>';
+            });
+    </script>
+</body>
+
+</html>

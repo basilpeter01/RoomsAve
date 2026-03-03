@@ -1,6 +1,9 @@
 # Environment variables (contains passwords)
 .env
 
+# about info (use about.example.json as template)
+config/about.json
+
 # Python
 __pycache__/
 *.pyc

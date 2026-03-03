@@ -1,0 +1,84 @@
+{
+    "project": {
+        "name": "RoomsAve",
+        "tagline": "Smart Hotel Room Management System",
+        "description": "A full-stack Database Management System project that streamlines hotel room booking, guest management, and payment processing. Built to demonstrate real-world DBMS concepts including ER modeling, normalization, and transactional integrity.",
+        "version": "1.0",
+        "year": 2026,
+        "semester": "4th Semester",
+        "subject": "Database Management Systems (DBMS)",
+        "highlights": [
+            "Real-time room availability tracking",
+            "Secure user authentication",
+            "Multi-method payment processing",
+            "Dynamic search & filtering",
+            "Responsive modern UI"
+        ]
+    },
+    "developer": {
+        "name": "Jane Doe",
+        "role": "Full-Stack Developer",
+        "college": "University of Technology",
+        "department": "Computer Science & Engineering",
+        "semester": "4th Semester",
+        "bio": "A passionate developer with a keen interest in building practical, real-world applications. This project was developed as part of the DBMS curriculum to explore relational database design, SQL optimization, and full-stack integration.",
+        "avatar_url": "",
+        "github": "https://github.com/janedoe",
+        "linkedin": "https://linkedin.com/in/janedoe",
+        "email": "jane.doe@university.edu"
+    },
+    "team": [
+        {
+            "name": "Jane Doe",
+            "role": "Frontend Developer",
+            "contribution": "UI Development & Responsive Design"
+        },
+        {
+            "name": "John Smith",
+            "role": "Backend Developer",
+            "contribution": "Flask API & Server Logic"
+        },
+        {
+            "name": "Alex Johnson",
+            "role": "Database Designer",
+            "contribution": "Schema Design & SQL Queries"
+        },
+        {
+            "name": "Sam Wilson",
+            "role": "Integration & Testing",
+            "contribution": "API Integration & QA Testing"
+        },
+        {
+            "name": "Chris Lee",
+            "role": "UI/UX & Documentation",
+            "contribution": "Design System & Project Docs"
+        }
+    ],
+    "guide": {
+        "name": "Prof. John Smith",
+        "designation": "Assistant Professor",
+        "department": "Computer Science & Engineering"
+    },
+    "tech_stack": [
+        {
+            "name": "Python Flask",
+            "category": "Backend",
+            "icon": "🐍"
+        },
+        {
+            "name": "MySQL 8.0",
+            "category": "Database",
+            "icon": "🗄️"
+        },
+        {
+            "name": "HTML / CSS / JS",
+            "category": "Frontend",
+            "icon": "🎨"
+        },
+        {
+            "name": "REST API",
+            "category": "Architecture",
+            "icon": "🔗"
+        }
+    ]
+}
