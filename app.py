@@ -88,7 +88,7 @@ def get_rooms():
         UPDATE room SET status = 'available'
         WHERE room_id IN (
             SELECT room_id FROM booking
-            WHERE check_out <= CURDATE() AND booking_status IN ('confirmed', 'completed')
+            WHERE check_out < CURDATE() AND booking_status IN ('confirmed', 'completed')
         ) AND status = 'booked'
     """)
     mysql.connection.commit()
@@ -254,22 +254,6 @@ def get_payments(booking_id):
 
     return jsonify(payments)
 
-
-# ============================================
-# ABOUT PAGE DATA
-# ============================================
-@app.route('/about', methods=['GET'])
-def get_about():
-    config_path = os.path.join(os.path.dirname(__file__), 'config', 'about.json')
-    example_path = os.path.join(os.path.dirname(__file__), 'config', 'about.example.json')
-
-    # Use real config if available, otherwise fall back to example
-    path = config_path if os.path.exists(config_path) else example_path
-    try:
-        with open(path, 'r', encoding='utf-8') as f:
-            return jsonify(json.load(f))
-    except Exception as e:
-        return jsonify({"error": "About info not available"}), 500
 
 # ============================================
 # RUN THE SERVER
