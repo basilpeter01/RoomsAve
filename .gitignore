@@ -1,7 +1,7 @@
-# Environment variables (contains passwords)
+# Environment variables
 .env
 
-# about info (use about.example.json as template)
+# about info
 config/about.json
 
 # Python
