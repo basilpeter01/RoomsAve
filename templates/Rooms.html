@@ -420,6 +420,23 @@
                 alert('Please log in first to book a room. Go to Home page to log in.');
                 return;
             }
+            // Verify session is still valid on server
+            fetch('/check-session')
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.logged_in) {
+                        localStorage.removeItem('user');
+                        alert('Your session has expired. Please log in again.');
+                        return;
+                    }
+                    _openBookingModalInner(roomId, roomType, price);
+                })
+                .catch(() => {
+                    alert('Cannot reach server. Please try again.');
+                });
+        }
+
+        function _openBookingModalInner(roomId, roomType, price) {
             document.getElementById('selectedRoomId').value = roomId;
             document.getElementById('selectedRoomPrice').value = price;
             document.getElementById('bookingRoomInfo').textContent = roomType + ' - $' + price + '/night';

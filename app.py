@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, session
 from flask_cors import CORS
 from flask_mysqldb import MySQL
 from dotenv import load_dotenv
@@ -10,6 +10,9 @@ load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+# Random secret key — changes every server restart, invalidating all sessions
+app.secret_key = os.urandom(24)
 
 # ============================================
 # MySQL Configuration (from .env file)
@@ -67,8 +70,24 @@ def login():
     user = cur.fetchone()
     cur.close()
     if user:
+        session['user_id'] = user['user_id']  # Store in server session
         return jsonify(user)
     return jsonify({"error": "Invalid username or password"}), 401
+
+
+# Check if session is still valid (used by frontend on page load)
+@app.route('/check-session', methods=['GET'])
+def check_session():
+    if 'user_id' in session:
+        return jsonify({"logged_in": True})
+    return jsonify({"logged_in": False})
+
+
+# Logout (clear server session)
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return jsonify({"message": "Logged out"})
 
 
 # ============================================
@@ -259,7 +278,7 @@ def get_payments(booking_id):
 # RUN THE SERVER
 # ============================================
 if __name__ == '__main__':
-    print("\n=== RoomsAve Hotel Management Server ===")
+    print("\n=== RoomsAve Server ===")
     print("    Running on http://localhost:5000")
     print(f"    Database: {os.getenv('MYSQL_DB', 'hotel_management')}\n")
     app.run(debug=True, port=5000)

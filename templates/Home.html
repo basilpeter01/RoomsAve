@@ -232,12 +232,26 @@
         const API = '';
 
         // =====================
-        // Check if already logged in
+        // Check if already logged in (verify with server)
         // =====================
         function checkLogin() {
             const user = JSON.parse(localStorage.getItem('user'));
             if (user) {
-                showLoggedInState(user);
+                // Verify the session is still valid on the server
+                fetch('/check-session')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.logged_in) {
+                            showLoggedInState(user);
+                        } else {
+                            // Server session expired (server was restarted)
+                            localStorage.removeItem('user');
+                        }
+                    })
+                    .catch(() => {
+                        // Server is unreachable, clear login
+                        localStorage.removeItem('user');
+                    });
             }
         }
 
@@ -282,8 +296,11 @@
         // LOGOUT
         // =====================
         function handleLogout() {
-            localStorage.removeItem('user');
-            window.location.reload();
+            fetch('/logout', { method: 'POST' })
+                .finally(() => {
+                    localStorage.removeItem('user');
+                    window.location.reload();
+                });
         }
 
         // =====================
