@@ -126,7 +126,7 @@
             <span id="nav-separator"> | </span>
             <a href="Rooms.html" id="rooms-link">Rooms</a>
             <span id="bookings-separator"> | </span>
-            <a href="#" id="bookings-link" onclick="viewMyBookings()">My Bookings</a>
+            <a href="#" id="bookings-link" onclick="viewMyBookings()">Bookings</a>
             <a href="#auth-section" id="login-nav-link"> | Log In</a>
             <a href="#" id="logout-link" onclick="handleLogout()"> | Log Out</a>
             <a href="#"> | About us</a>
@@ -178,12 +178,12 @@
         </div>
     </div>
 
-    <!-- My Bookings Modal -->
+    <!-- Bookings Modal -->
     <div id="bookingsModal" class="modal">
         <div class="modal-content" style="max-width: 600px; max-height: 80vh; display: flex; flex-direction: column;">
             <div
                 style="display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; margin-bottom: 10px;">
-                <h3 style="margin: 0;">My Bookings</h3>
+                <h3 style="margin: 0;">Bookings</h3>
                 <span class="close-btn" style="float: none; font-size: 1.8rem; cursor: pointer; line-height: 1;"
                     onclick="document.getElementById('bookingsModal').style.display='none'">&times;</span>
             </div>
@@ -402,7 +402,7 @@
         }
 
         // =====================
-        // VIEW MY BOOKINGS (calls /api/bookings/<user_id>)
+        // VIEW BOOKINGS (calls /api/bookings/<user_id>)
         // =====================
         function viewMyBookings() {
             const user = JSON.parse(localStorage.getItem('user'));
