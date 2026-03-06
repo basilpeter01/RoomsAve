@@ -1,9 +1,10 @@
 -- ============================================
 -- RoomsAve Hotel Management System
--- Database Schema & Seed Data
+-- Database Schema
 -- ============================================
 -- NOTE: Run this script ONCE as root user:
---   mysql -u root -p < schema.sql
+--   CMD:        mysql -u root -p < schema.sql
+--   PowerShell: Get-Content schema.sql | mysql -u root -p
 -- After this, everything uses the 'hotel_admin' user.
 -- ============================================
 
@@ -67,7 +68,6 @@ CREATE TABLE IF NOT EXISTS payment (
     FOREIGN KEY (booking_id) REFERENCES booking(booking_id) ON DELETE CASCADE
 );
 
--- ============================================
 -- SEED DATA
 -- ============================================
 

@@ -11,10 +11,9 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-# Random secret key — changes every server restart, invalidating all sessions
+# secret key — changes every server restart
 app.secret_key = os.urandom(24)
 
-# ============================================
 # MySQL Configuration (from .env file)
 # ============================================
 app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST', 'localhost')
@@ -26,7 +25,6 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
 
 
-# ============================================
 # SERVE FRONTEND 
 # ============================================
 @app.route('/')
@@ -37,7 +35,6 @@ def serve_home():
 def serve_page(filename):
     return send_from_directory('templates', f'{filename}.html')
 
-# ============================================
 # USER ROUTES
 # ============================================
 
@@ -90,11 +87,10 @@ def logout():
     return jsonify({"message": "Logged out"})
 
 
-# ============================================
 # ROOM ROUTES
 # ============================================
 
-# Get all rooms (with optional search & price filter)
+# Get all rooms (with search & price filter)
 @app.route('/rooms', methods=['GET'])
 def get_rooms():
     search = request.args.get('search', '')
@@ -147,7 +143,6 @@ def get_room(room_id):
     return jsonify({"error": "Room not found"}), 404
 
 
-# ============================================
 # BOOKING ROUTES
 # ============================================
 
@@ -233,7 +228,6 @@ def cancel_booking(booking_id):
         return jsonify({"error": str(e)}), 400
 
 
-# ============================================
 # PAYMENT ROUTES
 # ============================================
 
@@ -274,7 +268,6 @@ def get_payments(booking_id):
     return jsonify(payments)
 
 
-# ============================================
 # RUN THE SERVER
 # ============================================
 if __name__ == '__main__':

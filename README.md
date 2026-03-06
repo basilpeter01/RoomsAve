@@ -144,11 +144,19 @@ BOOKING (M) ──── money payment ──── (N) PAYMENT
 
 2. **Configure credentials** — copy `.env.example` to `.env` and fill in your MySQL details.
 
-3. **Initialize the database** — run `schema.sql` against MySQL as root:
+3. **Initialize the database** — run `schema.sql` against MySQL in cmd:
    ```
    mysql -u root -p < schema.sql
    ```
-   or create the user,database andtables manually.
+   or in PowerShell:
+   ```
+   Get-Content schema.sql | mysql -u root -p
+   ```
+   or inside mysql:
+   ```
+   source <path to schema.sql>;
+   ```
+   or create the user,database and tables manually.
 
 4. **Start the server**
    ```
