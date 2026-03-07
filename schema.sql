@@ -1,12 +1,11 @@
--- ============================================
 -- RoomsAve Hotel Management System
 -- Database Schema
--- ============================================
+
 -- NOTE: Run this script ONCE as root user:
 --   CMD:        mysql -u root -p < schema.sql
 --   PowerShell: Get-Content schema.sql | mysql -u root -p
 -- After this, everything uses the 'hotel_admin' user.
--- ============================================
+-- ===================================================
 
 -- Step 1: Create the database
 CREATE DATABASE IF NOT EXISTS hotel_management;
@@ -83,8 +82,8 @@ INSERT INTO room (room_number, room_type, capacity, price_per_night, status) VAL
 
 -- Sample Admin User (username: admin, password: admin123)
 INSERT INTO user (name, username, email, phone, password, role) VALUES
-('Admin', 'admin', 'admin@roomsave.com', '9999999999', 'admin123', 'admin');
+('Admin', 'admin', 'admin@roomsave.com', '9999999999', 'scrypt:32768:8:1$mTsIJRWqHZO4V80I$bbf22e4affe8bb30b4b5607c8d265edb60b158ab8005af1486a7abd71aff55bc686b0ad2395e3002a37d3eb78871ad1b8e34ffbfae4732d4508aacaf2b77675f', 'admin');
 
--- Sample Guest User (username: johndoe, password: guest123)
+-- Sample Guest User (username: guest, password: guest123)
 INSERT INTO user (name, username, email, phone, password, role) VALUES
-('John Doe', 'johndoe', 'john@example.com', '8888888888', 'guest123', 'guest');
+('Guest', 'guest', 'guest@roomsave.com', '8888888888', 'scrypt:32768:8:1$YmdqnlDYaTcmvcT6$af77d88df4eceb6c4845f053fb077f6304ea7f01364367f3c7f933ffe5b446a88d4ffb7f10806074ec643b7c7103eec7b88e654d16e3c35467c9a9c3e8c19d9d', 'guest');

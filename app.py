@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, send_from_directory, session
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
 from flask_mysqldb import MySQL
 from dotenv import load_dotenv
@@ -44,9 +45,10 @@ def register():
     data = request.json
     try:
         cur = mysql.connection.cursor()
+        hashed_pw = generate_password_hash(data['password'])
         cur.execute(
             "INSERT INTO user (name, username, email, phone, password, role) VALUES (%s, %s, %s, %s, %s, %s)",
-            (data['name'], data['username'], data.get('email', ''), data.get('phone', ''), data['password'], 'guest')
+            (data['name'], data['username'], data.get('email', ''), data.get('phone', ''), hashed_pw, 'guest')
         )
         mysql.connection.commit()
         cur.close()
@@ -61,12 +63,13 @@ def login():
     data = request.json
     cur = mysql.connection.cursor()
     cur.execute(
-        "SELECT user_id, name, username, role FROM user WHERE username = %s AND password = %s",
-        (data['username'], data['password'])
+        "SELECT user_id, name, username, role, password FROM user WHERE username = %s",
+        (data['username'],)
     )
     user = cur.fetchone()
     cur.close()
-    if user:
+    if user and check_password_hash(user['password'], data['password']):
+        del user['password']  # Don't leak hash to frontend
         session['user_id'] = user['user_id']  # Store in server session
         return jsonify(user)
     return jsonify({"error": "Invalid username or password"}), 401
@@ -272,6 +275,4 @@ def get_payments(booking_id):
 # ============================================
 if __name__ == '__main__':
     print("\n=== RoomsAve Server ===")
-    print("    Running on http://localhost:5000")
-    print(f"    Database: {os.getenv('MYSQL_DB', 'hotel_management')}\n")
     app.run(debug=True, port=5000)
