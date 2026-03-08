@@ -12,8 +12,5 @@ __pycache__/
 .vscode/
 .idea/
 
-# Templates
-templates/About.html
-
 # Temp files
 _hashes.txt
