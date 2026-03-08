@@ -81,7 +81,7 @@ function loadRooms() {
                 'Suite': 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=500',
                 'Standard': 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=500',
                 'Penthouse': 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=500',
-                'Cabin': 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500',
+                'Cabin': 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?',
                 'Studio': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500',
                 'Heritage': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500'
             };
