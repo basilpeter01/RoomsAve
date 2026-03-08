@@ -14,9 +14,7 @@
 
         /* Navigation visibility logic */
         #rooms-link,
-        #nav-separator,
-        #bookings-link,
-        #bookings-separator {
+        #bookings-link {
             display: none;
         }
 
@@ -123,13 +121,11 @@
         <div class="logo">RoomsAve</div>
         <div class="nav-links">
             <a href="Home.html">Home</a>
-            <span id="nav-separator"> | </span>
             <a href="Rooms.html" id="rooms-link">Rooms</a>
-            <span id="bookings-separator"> | </span>
             <a href="#" id="bookings-link" onclick="viewMyBookings()">Bookings</a>
-            <a href="#auth-section" id="login-nav-link"> | Log In</a>
-            <a href="#" id="logout-link" onclick="handleLogout()"> | Log Out</a>
-            <a href="About.html"> | About us</a>
+            <a href="#auth-section" id="login-nav-link">Log In</a>
+            <a href="#" id="logout-link" onclick="handleLogout()">Log Out</a>
+            <a href="About.html">About</a>
         </div>
     </nav>
 
@@ -258,9 +254,7 @@
         function showLoggedInState(user) {
             document.getElementById('auth-section').style.display = 'none';
             document.getElementById('rooms-link').style.display = 'inline';
-            document.getElementById('nav-separator').style.display = 'inline';
             document.getElementById('bookings-link').style.display = 'inline';
-            document.getElementById('bookings-separator').style.display = 'inline';
             document.getElementById('login-nav-link').style.display = 'none';
             document.getElementById('logout-link').style.display = 'inline';
             document.getElementById('welcomeMsg').textContent = 'Welcome back, ' + user.name + '!';
