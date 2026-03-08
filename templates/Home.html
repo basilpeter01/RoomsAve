@@ -18,7 +18,8 @@
             display: none;
         }
 
-        #logout-link {
+        #logout-link,
+        #roomSection {
             display: none;
         }
 
@@ -149,11 +150,11 @@
                 </div>
                 <button type="submit" class="btn-auth">Login</button>
             </form>
-            <p class="toggle-text">New to RoomsAve? <a href="Signup.html">Create an Account</a></p>
+            <p class="toggle-text">New user? <a href="Signup.html">Create an Account</a></p>
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" id="roomSection">
         <h2 class="section-title">Featured Rooms</h2>
         <div class="room-grid" id="roomGrid"></div>
     </div>
@@ -257,6 +258,7 @@
             document.getElementById('bookings-link').style.display = 'inline';
             document.getElementById('login-nav-link').style.display = 'none';
             document.getElementById('logout-link').style.display = 'inline';
+            document.getElementById('roomSection').style.display = 'block';
             document.getElementById('welcomeMsg').textContent = 'Welcome back, ' + user.name + '!';
         }
 
