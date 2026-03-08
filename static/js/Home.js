@@ -1,7 +1,6 @@
 const API = '';
 
-// =====================
-// Check if already logged in (verify with server)
+// Check if already logged in 
 // =====================
 function checkLogin() {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -34,7 +33,6 @@ function showLoggedInState(user) {
     document.getElementById('welcomeMsg').textContent = 'Welcome back, ' + user.name + '!';
 }
 
-// =====================
 // LOGIN (calls /login)
 // =====================
 function handleAuth(event) {
@@ -60,7 +58,6 @@ function handleAuth(event) {
         .catch(err => alert('Server error. Make sure Flask is running.'));
 }
 
-// =====================
 // LOGOUT
 // =====================
 function handleLogout() {
@@ -71,7 +68,6 @@ function handleLogout() {
         });
 }
 
-// =====================
 // FETCH ROOMS FROM DATABASE
 // =====================
 function loadRooms() {
@@ -117,7 +113,6 @@ function loadRooms() {
         });
 }
 
-// =====================
 // BOOKING MODAL
 // =====================
 const modal = document.getElementById('bookingModal');
@@ -141,7 +136,6 @@ function openModal(roomId, roomType, price) {
 
 function closeModal() { modal.style.display = 'none'; }
 
-// =====================
 // CONFIRM BOOKING (calls /api/booking)
 // =====================
 function confirmBooking(e) {
@@ -186,7 +180,6 @@ function confirmBooking(e) {
         .catch(err => alert('Booking failed. Check server.'));
 }
 
-// =====================
 // VIEW BOOKINGS (calls /api/bookings/<user_id>)
 // =====================
 function viewMyBookings() {
@@ -234,7 +227,6 @@ function viewMyBookings() {
         });
 }
 
-// =====================
 // CANCEL BOOKING
 // =====================
 function cancelBooking(bookingId) {
@@ -248,7 +240,6 @@ function cancelBooking(bookingId) {
         });
 }
 
-// =====================
 // PAYMENT MODAL
 // =====================
 function openPaymentModal(bookingId, totalAmount, nights) {
@@ -296,7 +287,6 @@ function closeSuccessModal() {
     document.getElementById('paymentSuccessModal').style.display = 'none';
 }
 
-// =====================
 // INIT
 // =====================
 checkLogin();

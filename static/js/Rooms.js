@@ -83,7 +83,6 @@ function clearFilters() {
     renderRooms(allRoomData);
 }
 
-// =====================
 // BOOKING MODAL
 // =====================
 function openBookingModal(roomId, roomType, price) {
@@ -122,7 +121,6 @@ function closeBookingModal() {
     document.getElementById('bookingModal').style.display = 'none';
 }
 
-// =====================
 // CONFIRM BOOKING
 // =====================
 function confirmBooking(e) {
@@ -167,7 +165,6 @@ function confirmBooking(e) {
         .catch(err => alert('Booking failed. Check server.'));
 }
 
-// =====================
 // PAYMENT MODAL
 // =====================
 function openPaymentModal(bookingId, totalAmount, nights) {
@@ -182,7 +179,6 @@ function closePaymentModal() {
     document.getElementById('paymentModal').style.display = 'none';
 }
 
-// =====================
 // SUBMIT PAYMENT
 // =====================
 function submitPayment(e) {
