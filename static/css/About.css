@@ -35,11 +35,6 @@
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.about-card:hover {
-    border-color: var(--primary);
-    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
-}
-
 /* Icon circle */
 .card-icon {
     width: 48px;
@@ -113,28 +108,18 @@
     border: 1px solid rgba(37, 99, 235, 0.15);
 }
 
-/* GitHub link */
-.github-link {
+/* GitHub icon in nav */
+.github-icon {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 30px;
-    padding: 14px 28px;
-    background: var(--dark);
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 600;
-    border-radius: 12px;
-    transition: background 0.25s ease, transform 0.2s ease;
+    color: var(--secondary);
+    transition: color 0.25s ease;
 }
 
-.github-link:hover {
-    background: #334155;
-    transform: translateY(-2px);
+.github-icon:hover {
+    color: var(--dark);
 }
 
-.github-link svg {
+.github-icon svg {
     flex-shrink: 0;
 }
